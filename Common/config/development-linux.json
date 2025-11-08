@@ -53,6 +53,14 @@
       "utils": {
         "utils_common_fontdir": "/usr/share/fonts"
       },
+      "sql": {
+        "type": "postgres",
+        "dbHost": "localhost",
+        "dbPort": 5432,
+        "dbName": "onlyoffice",
+        "dbUser": "onlyoffice",
+        "dbPass": "onlyoffice"
+      },
       "request-filtering-agent": {
         "allowPrivateIPAddress": true,
         "allowMetaIPAddress": true

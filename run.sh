@@ -5,6 +5,9 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
+# Create logs directory if it doesn't exist
+mkdir -p "$SCRIPT_DIR/logs"
+
 # Set environment variables
 export NODE_ENV=development-linux
 export NODE_CONFIG_DIR="$SCRIPT_DIR/Common/config"
@@ -16,7 +19,7 @@ echo ""
 # Start DocService in background
 echo "Starting DocService..."
 cd "$SCRIPT_DIR/DocService"
-nohup node sources/server.js > ../logs/docservice.log 2>&1 &
+nohup node sources/server.js > "$SCRIPT_DIR/logs/docservice.log" 2>&1 &
 DOCSERVICE_PID=$!
 echo "DocService started with PID: $DOCSERVICE_PID"
 echo "Logs: $SCRIPT_DIR/logs/docservice.log"
@@ -27,7 +30,7 @@ sleep 3
 # Start FileConverter in background
 echo "Starting FileConverter..."
 cd "$SCRIPT_DIR/FileConverter"
-nohup node sources/convertermaster.js > ../logs/fileconverter.log 2>&1 &
+nohup node sources/convertermaster.js > "$SCRIPT_DIR/logs/fileconverter.log" 2>&1 &
 FILECONVERTER_PID=$!
 echo "FileConverter started with PID: $FILECONVERTER_PID"
 echo "Logs: $SCRIPT_DIR/logs/fileconverter.log"
