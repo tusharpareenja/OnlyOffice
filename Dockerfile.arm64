@@ -1,0 +1,63 @@
+# Dockerfile for ONLYOFFICE Document Server - ARM64
+FROM node:18-slim
+
+# Set architecture
+ARG TARGETARCH=arm64
+ARG BUILDPLATFORM=linux/arm64
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY npm-shrinkwrap.json ./
+COPY Common/package*.json ./Common/
+COPY Common/npm-shrinkwrap.json ./Common/
+COPY DocService/package*.json ./DocService/
+COPY DocService/npm-shrinkwrap.json ./DocService/
+COPY FileConverter/package*.json ./FileConverter/
+COPY FileConverter/npm-shrinkwrap.json ./FileConverter/
+
+# Install root dependencies
+RUN npm ci
+
+# Install sub-project dependencies
+RUN npm run install:Common && \
+    npm run install:DocService && \
+    npm run install:FileConverter
+
+# Copy application code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p logs App_Data/data
+
+# Set environment variables
+ENV NODE_ENV=production-linux
+ENV NODE_CONFIG_DIR=/app/Common/config
+
+# Copy docker config (will be merged with production-linux.json)
+COPY Common/config/docker.json /app/Common/config/docker.json
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/healthcheck || exit 1
+
+# Start script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
