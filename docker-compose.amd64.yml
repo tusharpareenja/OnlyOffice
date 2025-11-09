@@ -4,8 +4,8 @@ services:
   documentserver:
     build:
       context: .
-      dockerfile: Dockerfile.arm64
-    container_name: onlyoffice-documentserver-arm
+      dockerfile: Dockerfile.amd64
+    container_name: onlyoffice-documentserver-intel
     network_mode: host
     environment:
       NODE_ENV: development-linux
@@ -23,3 +23,4 @@ services:
       - ./App_Data:/app/App_Data
       - ./logs:/app/logs
     restart: unless-stopped
+

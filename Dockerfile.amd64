@@ -1,9 +1,9 @@
-# Dockerfile for ONLYOFFICE Document Server - ARM64
+# Dockerfile for ONLYOFFICE Document Server - Intel/x86_64
 FROM node:18-slim
 
 # Set architecture
-ARG TARGETARCH=arm64
-ARG BUILDPLATFORM=linux/arm64
+ARG TARGETARCH=amd64
+ARG BUILDPLATFORM=linux/amd64
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
